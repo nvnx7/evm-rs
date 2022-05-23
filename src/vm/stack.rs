@@ -68,6 +68,7 @@ impl fmt::Display for Stack {
             "{}",
             self.data
                 .iter()
+                .rev()
                 .fold(String::new(), |acc, &x| format!("{}{}\n", acc, x))
         )
     }
@@ -75,7 +76,14 @@ impl fmt::Display for Stack {
 
 impl fmt::Debug for Stack {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self.data)
+        write!(
+            f,
+            "{:?}",
+            self.data
+                .iter()
+                .rev()
+                .fold(String::new(), |acc, &x| format!("{}{}\n", acc, x))
+        )
     }
 }
 
