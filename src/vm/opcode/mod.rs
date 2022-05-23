@@ -16,9 +16,10 @@ type OpcodeFunction = fn(&mut Vm) -> Control;
 #[derive(Debug, PartialEq)]
 pub enum Control {
     Continue(usize),
-    Error(VmError),
-    Revert,
+    Jump(usize),
     Stop,
+    Revert,
+    Error(VmError),
 }
 
 macro_rules! make_opcode {
@@ -68,8 +69,11 @@ impl Opcode {
     make_opcode!(0x51, MLOAD, mload);
     make_opcode!(0x52, MSTORE, mstore);
     make_opcode!(0x53, MSTORE8, mstore8);
+    make_opcode!(0x56, JUMP, jump);
+    make_opcode!(0x57, JUMPI, jumpi);
     make_opcode!(0x58, PC, pc);
     make_opcode!(0x59, MSIZE, msize);
+    make_opcode!(0x5b, JUMPDEST, jumpdest);
 
     // PUSH1 - PUSH32
     make_opcode!(0x60, PUSH1, push1);
@@ -183,8 +187,11 @@ pub const OPCODE_LIST: [Opcode; 256] = {
     opcodes[Opcode::MLOAD.code as usize] = Opcode::MLOAD;
     opcodes[Opcode::MSTORE.code as usize] = Opcode::MSTORE;
     opcodes[Opcode::MSTORE8.code as usize] = Opcode::MSTORE8;
+    opcodes[Opcode::JUMP.code as usize] = Opcode::JUMP;
+    opcodes[Opcode::JUMPI.code as usize] = Opcode::JUMPI;
     opcodes[Opcode::PC.code as usize] = Opcode::PC;
     opcodes[Opcode::MSIZE.code as usize] = Opcode::MSIZE;
+    opcodes[Opcode::JUMPDEST.code as usize] = Opcode::JUMPDEST;
 
     opcodes[Opcode::PUSH1.code as usize] = Opcode::PUSH1;
     opcodes[Opcode::PUSH2.code as usize] = Opcode::PUSH2;
@@ -251,6 +258,8 @@ pub const OPCODE_LIST: [Opcode; 256] = {
     opcodes[Opcode::SWAP14.code as usize] = Opcode::SWAP14;
     opcodes[Opcode::SWAP15.code as usize] = Opcode::SWAP15;
     opcodes[Opcode::SWAP16.code as usize] = Opcode::SWAP16;
+
+    opcodes[Opcode::INVALID.code as usize] = Opcode::INVALID;
 
     opcodes
 };
