@@ -9,10 +9,11 @@ use opcode::{Control, Opcode};
 use std::fmt;
 
 pub struct Vm {
-    pub stack: stack::Stack,
-    pub memory: memory::Memory,
-    pub pc: usize, // program counter
-    pub code: Vec<u8>,
+    stack: stack::Stack,
+    memory: memory::Memory,
+    pc: usize, // program counter
+    code: Vec<u8>,
+    valid_jumps: Vec<usize>,
 }
 
 #[derive(Debug)]
@@ -25,11 +26,30 @@ pub enum ExitReason {
 
 impl Vm {
     pub fn new(code: &[u8]) -> Self {
+        let valid_jumps = {
+            let mut jumps = Vec::new();
+            let mut i = 0;
+            while i < code.len() {
+                let inc = if code[i] == Opcode::JUMPDEST.code {
+                    jumps.push(i);
+                    1
+                } else if code[i] >= Opcode::PUSH1.code && code[i] <= Opcode::PUSH32.code {
+                    (code[i] - Opcode::PUSH1.code + 1) as usize
+                } else {
+                    1
+                };
+
+                i += inc;
+            }
+            jumps
+        };
+
         Vm {
             stack: stack::Stack::default(),
             memory: memory::Memory::new(),
             pc: 0,
             code: code.to_vec(),
+            valid_jumps,
         }
     }
 
@@ -45,8 +65,7 @@ impl Vm {
                     _ => (),
                 },
                 Err(e) => {
-                    println!("Err: {:?}", e);
-                    break;
+                    panic!("{:?}", e);
                 }
             }
         }
@@ -66,10 +85,18 @@ impl Vm {
                 self.pc += n;
                 Ok(ExitReason::Nil)
             }
+            Control::Jump(dest) => {
+                self.pc = dest;
+                Ok(ExitReason::Nil)
+            }
             Control::Stop => Ok(ExitReason::Stop),
             Control::Revert => Err(ExitReason::Revert),
             Control::Error(e) => Err(ExitReason::Error(e)),
         }
+    }
+
+    pub fn is_valid_jump(&self, dest: usize) -> bool {
+        self.valid_jumps.contains(&dest)
     }
 }
 

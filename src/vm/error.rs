@@ -7,4 +7,5 @@ pub enum VmError {
     UnsuccessfulRun,
     UnknownOpcode,
     UnsupportedOperation,
+    InvalidJump,
 }
