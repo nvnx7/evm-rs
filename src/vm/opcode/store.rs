@@ -71,12 +71,6 @@ pub fn mstore8(vm: &mut Vm) -> Control {
     Control::Continue(1)
 }
 
-// 0x58
-pub fn pc(vm: &mut Vm) -> Control {
-    push_u256!(vm, U256::from(vm.pc));
-    Control::Continue(1)
-}
-
 // 0x59
 pub fn msize(vm: &mut Vm) -> Control {
     push_u256!(vm, U256::from(vm.memory.size()));
