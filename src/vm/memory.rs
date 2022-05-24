@@ -17,7 +17,7 @@ impl Memory {
 
     // Stores a byte in memory
     pub fn store8(&mut self, offset: usize, value: u8) {
-        self.expand(offset, 0);
+        self.expand(offset, 1);
         self.set(offset, &[value]);
     }
 
@@ -37,16 +37,20 @@ impl Memory {
     }
     // Untouched memory expansion in 32 byte steps
     fn expand(&mut self, offset: usize, size: usize) {
-        if offset + size >= self.data.len() {
+        if offset + size - 1 >= self.data.len() {
             let r = (offset + size) % 32;
-            self.data.resize(offset + size + 32 - r, 0);
+            if r == 0 {
+                self.data.resize(offset + size, 0);
+            } else {
+                self.data.resize(offset + size + 32 - r, 0);
+            }
         }
     }
 }
 
 impl fmt::Debug for Memory {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self.data)
+        write!(f, "{:x?}", self.data)
     }
 }
 
@@ -73,7 +77,7 @@ mod test {
     #[test]
     fn store_expansion() {
         let mut mem = Memory::new();
-        mem.store8(0, 100);
+        mem.store(0, &[42; 32]);
         assert_eq!(mem.size(), 32);
 
         mem.store(8, &[99; 32]);
@@ -84,7 +88,7 @@ mod test {
         mem.store(31, &[55; 32]);
         assert_eq!(mem.size(), 64);
         mem.store(32, &[90; 32]);
-        assert_eq!(mem.size(), 96);
+        assert_eq!(mem.size(), 64);
     }
 
     #[test]
