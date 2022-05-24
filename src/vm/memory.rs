@@ -1,3 +1,4 @@
+use hex;
 use std::fmt;
 
 pub struct Memory {
@@ -50,7 +51,7 @@ impl Memory {
 
 impl fmt::Debug for Memory {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:x?}", self.data)
+        write!(f, "{}", hex::encode(&self.data))
     }
 }
 
