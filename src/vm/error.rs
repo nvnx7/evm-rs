@@ -5,7 +5,7 @@ pub enum VmError {
     StackUnderflow,
     // runtime error
     UnsuccessfulRun,
-    UnknownOpcode,
+    InvalidOpcode,
     UnsupportedOperation,
     InvalidJump,
 }
