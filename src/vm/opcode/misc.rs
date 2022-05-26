@@ -7,6 +7,21 @@ pub fn stop(_vm: &mut Vm) -> Control {
     Control::Stop
 }
 
+// 0x38
+pub fn codesize(vm: &mut Vm) -> Control {
+    let size = vm.code.len();
+    push_u256!(vm, U256::from(size));
+    Control::Continue(1)
+}
+
+// 0x39
+pub fn codecopy(vm: &mut Vm) -> Control {
+    pop_usize!(vm, mem_offset, code_offset, code_size);
+    let code_slice = vm.code[code_offset..(code_offset + code_size)].to_vec();
+    vm.memory.write(mem_offset, &code_slice);
+    Control::Continue(1)
+}
+
 // 0x56
 pub fn jump(vm: &mut Vm) -> Control {
     pop_usize!(vm, dest);
@@ -50,5 +65,5 @@ pub fn revert(vm: &mut Vm) -> Control {
 
 // 0xfe
 pub fn invalid(_vm: &mut Vm) -> Control {
-    Control::Error(VmError::UnknownOpcode)
+    Control::Error(VmError::InvalidOpcode)
 }
