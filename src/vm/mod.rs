@@ -75,7 +75,7 @@ impl Vm {
         let opcode = if let Some(op) = self.code.get(self.pc).and_then(|&code| Opcode::get(code)) {
             op
         } else {
-            return Err(ExitReason::Error(VmError::UnknownOpcode));
+            return Err(ExitReason::Error(VmError::InvalidOpcode));
         };
 
         let func = opcode.exec;
