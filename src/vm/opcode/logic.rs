@@ -89,3 +89,25 @@ pub fn not(vm: &mut Vm) -> Control {
 //     push_u256!(vm, res);
 //     Control::Continue(1)
 // }
+
+// 0x1b
+pub fn shl(vm: &mut Vm) -> Control {
+    pop_u256!(vm, value, shift);
+    if shift >= U256::from(256) || value == U256::zero() {
+        push_u256!(vm, U256::zero());
+    } else {
+        push_u256!(vm, value << shift);
+    }
+    Control::Continue(1)
+}
+
+// 0x1c
+pub fn shr(vm: &mut Vm) -> Control {
+    pop_u256!(vm, value, shift);
+    if shift >= U256::from(256) || value == U256::zero() {
+        push_u256!(vm, U256::zero());
+    } else {
+        push_u256!(vm, value >> shift);
+    }
+    Control::Continue(1)
+}

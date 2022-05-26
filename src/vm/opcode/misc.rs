@@ -38,6 +38,16 @@ pub fn jumpdest(_vm: &mut Vm) -> Control {
     Control::Continue(1)
 }
 
+// 0xf3
+pub fn return_(vm: &mut Vm) -> Control {
+    Control::Stop
+}
+
+// 0xfd
+pub fn revert(vm: &mut Vm) -> Control {
+    Control::Revert
+}
+
 // 0xfe
 pub fn invalid(_vm: &mut Vm) -> Control {
     Control::Error(VmError::UnknownOpcode)
