@@ -12,14 +12,12 @@ impl Memory {
 
     // Stores a word (32-byte) in memory
     pub fn store(&mut self, offset: usize, value: &[u8; 32]) {
-        self.expand(offset, 32);
-        self.set(offset, value);
+        self.write(offset, value);
     }
 
     // Stores a byte in memory
     pub fn store8(&mut self, offset: usize, value: u8) {
-        self.expand(offset, 1);
-        self.set(offset, &[value]);
+        self.write(offset, &[value]);
     }
 
     // Loads a word (32-byte) from memory
@@ -27,15 +25,18 @@ impl Memory {
         self.expand(offset, 32);
         (&self.data[offset..(offset + 32)]).to_vec()
     }
+
     pub fn size(&self) -> usize {
         self.data.len()
     }
 
     // Stores a value in memory
-    fn set(&mut self, offset: usize, value: &[u8]) {
+    pub fn write(&mut self, offset: usize, value: &[u8]) {
+        self.expand(offset, value.len());
         self.data
             .splice(offset..(offset + value.len()), value.iter().cloned());
     }
+
     // Untouched memory expansion in 32 byte steps
     fn expand(&mut self, offset: usize, size: usize) {
         if offset + size - 1 >= self.data.len() {
