@@ -26,6 +26,7 @@ pub enum ExitReason {
 
 impl Vm {
     pub fn new(code: &[u8]) -> Self {
+        // determine valid jumps
         let valid_jumps = {
             let mut jumps = Vec::new();
             let mut i = 0;
@@ -72,6 +73,10 @@ impl Vm {
     }
 
     pub fn step(&mut self) -> Result<ExitReason, ExitReason> {
+        if self.pc >= self.code.len() {
+            return Ok(ExitReason::Stop);
+        }
+
         let opcode = if let Some(op) = self.code.get(self.pc).and_then(|&code| Opcode::get(code)) {
             op
         } else {
