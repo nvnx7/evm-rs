@@ -33,7 +33,7 @@ impl Stack {
     }
 
     pub fn peek(&mut self, n: usize) -> Result<H256, VmError> {
-        match self.data.get(self.data.len() - n - 1) {
+        match self.data.get(self.data.len() - n) {
             Some(x) => Ok(*x),
             None => Err(VmError::StackOverflow),
         }
