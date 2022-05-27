@@ -1,6 +1,6 @@
 # rust-evm
 
-EVM (Ethereum Virtual Machine) implementation in Rust language.
+EVM (Ethereum Virtual Machine) implementation in Rust language acc. to the specs.
 
 ### Example
 ```rust
