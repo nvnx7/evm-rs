@@ -34,11 +34,16 @@ pub fn jump(vm: &mut Vm) -> Control {
 
 // 0x57
 pub fn jumpi(vm: &mut Vm) -> Control {
-    pop_usize!(vm, dest, a);
-    if a == 0 {
-        Control::Continue(1)
+    pop_usize!(vm, dest);
+    pop_u256!(vm, a);
+    if a != U256::zero() {
+        if vm.is_valid_jump(dest) {
+            Control::Jump(dest)
+        } else {
+            Control::Error(VmError::InvalidJump)
+        }
     } else {
-        Control::Jump(dest)
+        Control::Continue(1)
     }
 }
 
