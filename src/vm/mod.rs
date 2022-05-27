@@ -56,7 +56,6 @@ impl Vm {
 
     pub fn run(&mut self) {
         loop {
-            info!("\n{:?}", self);
             match self.step() {
                 Ok(reason) => match reason {
                     ExitReason::Stop => {
@@ -85,6 +84,7 @@ impl Vm {
 
         let func = opcode.exec;
 
+        info!("\n{:?}", self);
         match func(self) {
             Control::Continue(n) => {
                 self.pc += n;
