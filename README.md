@@ -19,6 +19,6 @@ let code = vec![
     0x00, // STOP
 ];
 
-let mut vm = vm::Vm::new(&code4);
+let mut vm = Vm::new(&code4);
 vm.run();
 ```
