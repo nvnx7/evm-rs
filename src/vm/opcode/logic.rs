@@ -1,4 +1,5 @@
 use super::Control;
+use crate::vm::opcode::i256::I256;
 use crate::vm::Vm;
 use core::ops::{BitAnd, BitOr, BitXor};
 use primitive_types::{H256, U256};
@@ -21,12 +22,18 @@ pub fn gt(vm: &mut Vm) -> Control {
 
 // 0x12
 pub fn slt(vm: &mut Vm) -> Control {
-    lt(vm)
+    pop_i256!(vm, a, b);
+    let res = if a.lt(&b) { U256::one() } else { U256::zero() };
+    push_u256!(vm, res);
+    Control::Continue(1)
 }
 
 // 0x13
 pub fn sgt(vm: &mut Vm) -> Control {
-    gt(vm)
+    pop_i256!(vm, a, b);
+    let res = if a.gt(&b) { U256::one() } else { U256::zero() };
+    push_u256!(vm, res);
+    Control::Continue(1)
 }
 
 // 0x14

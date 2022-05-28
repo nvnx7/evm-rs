@@ -92,3 +92,18 @@ macro_rules! pop_usize {
         )*
     };
 }
+
+// pop signed integers
+macro_rules! pop_i256 {
+    ($vm: expr, $($id:ident),*) => {
+            $(
+                let $id = match $vm.stack.pop() {
+                    Ok(v) => {
+                        let uint = h256_to_u256!(v[..]);
+                        I256::from(uint)
+                    },
+                    Err(e) => return Control::Error(e)
+                };
+            )*
+        };
+}

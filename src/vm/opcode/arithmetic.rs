@@ -1,4 +1,5 @@
 use super::Control;
+use crate::vm::opcode::i256::I256;
 use crate::vm::Vm;
 use primitive_types::{H256, U256};
 
@@ -36,7 +37,10 @@ pub fn div(vm: &mut Vm) -> Control {
 
 // 0x05
 pub fn sdiv(vm: &mut Vm) -> Control {
-    div(vm)
+    pop_i256!(vm, a, b);
+    let q: U256 = (a / b).into();
+    push_u256!(vm, q);
+    Control::Continue(1)
 }
 
 // 0x06 (`mod` is reserved keyword)
@@ -49,7 +53,10 @@ pub fn rem(vm: &mut Vm) -> Control {
 
 // 0x07
 pub fn srem(vm: &mut Vm) -> Control {
-    rem(vm)
+    pop_i256!(vm, a, b);
+    let r: U256 = (a % b).into();
+    push_u256!(vm, r);
+    Control::Continue(1)
 }
 
 // 0x08
