@@ -14,13 +14,15 @@ pub struct Vm {
     pc: usize, // program counter
     code: Vec<u8>,
     valid_jumps: Vec<usize>,
+    return_data: (usize, usize),
 }
 
 #[derive(Debug)]
-pub enum ExitReason {
-    Nil,
+pub enum Execution {
+    Continue,
     Stop,
     Revert,
+    Return,
     Error(VmError),
 }
 
@@ -51,35 +53,40 @@ impl Vm {
             pc: 0,
             code: code.to_vec(),
             valid_jumps,
+            return_data: (0, 0), // (offset, size)
         }
     }
 
-    pub fn run(&mut self) {
+    pub fn run(&mut self) -> Result<(), Execution> {
         loop {
             match self.step() {
                 Ok(reason) => match reason {
-                    ExitReason::Stop => {
+                    Execution::Stop => {
                         info!("STOP");
-                        return;
+                        return Ok(());
                     }
-                    _ => (),
+                    Execution::Return => {
+                        info!("RETURN");
+                        return Ok(());
+                    }
+                    _ => (()),
                 },
                 Err(e) => {
-                    panic!("{:?}", e);
+                    return Err(e);
                 }
             }
         }
     }
 
-    pub fn step(&mut self) -> Result<ExitReason, ExitReason> {
+    pub fn step(&mut self) -> Result<Execution, Execution> {
         if self.pc >= self.code.len() {
-            return Ok(ExitReason::Stop);
+            return Ok(Execution::Stop);
         }
 
         let opcode = if let Some(op) = self.code.get(self.pc).and_then(|&code| Opcode::get(code)) {
             op
         } else {
-            return Err(ExitReason::Error(VmError::InvalidOpcode));
+            return Err(Execution::Error(VmError::InvalidOpcode));
         };
 
         let func = opcode.exec;
@@ -88,16 +95,21 @@ impl Vm {
         match func(self) {
             Control::Continue(n) => {
                 self.pc += n;
-                Ok(ExitReason::Nil)
+                Ok(Execution::Continue)
             }
             Control::Jump(dest) => {
                 self.pc = dest;
-                Ok(ExitReason::Nil)
+                Ok(Execution::Continue)
             }
-            Control::Stop => Ok(ExitReason::Stop),
-            Control::Revert => Err(ExitReason::Revert),
-            Control::Error(e) => Err(ExitReason::Error(e)),
+            Control::Return => Ok(Execution::Return),
+            Control::Stop => Ok(Execution::Stop),
+            Control::Revert => Err(Execution::Revert),
+            Control::Error(e) => Err(Execution::Error(e)),
         }
+    }
+
+    pub fn get_return_data(&mut self) -> Vec<u8> {
+        self.memory.read(self.return_data.0, self.return_data.1)
     }
 
     pub fn is_valid_jump(&self, dest: usize) -> bool {
