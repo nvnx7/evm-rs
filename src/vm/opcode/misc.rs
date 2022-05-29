@@ -60,11 +60,15 @@ pub fn jumpdest(_vm: &mut Vm) -> Control {
 
 // 0xf3
 pub fn return_(vm: &mut Vm) -> Control {
-    Control::Stop
+    pop_usize!(vm, offset, size);
+    vm.return_data = (offset, size);
+    Control::Return
 }
 
 // 0xfd
 pub fn revert(vm: &mut Vm) -> Control {
+    pop_usize!(vm, offset, size);
+    vm.return_data = (offset, size);
     Control::Revert
 }
 
