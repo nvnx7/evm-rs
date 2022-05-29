@@ -22,12 +22,16 @@ impl Memory {
 
     // Loads a word (32-byte) from memory
     pub fn load(&mut self, offset: usize) -> Vec<u8> {
-        self.expand(offset, 32);
-        (&self.data[offset..(offset + 32)]).to_vec()
+        self.read(offset, 32)
     }
 
     pub fn size(&self) -> usize {
         self.data.len()
+    }
+
+    pub fn read(&mut self, offset: usize, size: usize) -> Vec<u8> {
+        self.expand(offset, size);
+        (&self.data[offset..(offset + size)]).to_vec()
     }
 
     // Stores a value in memory
