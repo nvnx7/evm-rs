@@ -16,7 +16,6 @@ let code =  vec![
             0x11, // GT          (check sum < 5)
             0x60, 0x02, // PUSH1
             0x57, // JUMPI       (iterate if sum < 5)
-            // 0x00,    // STOP
             0x60, 0x00, // PUSH1
             0x52, // MSTORE      (store sum in memory)
             0x60, 0x20, // PUSH1
