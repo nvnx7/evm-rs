@@ -19,6 +19,7 @@ pub enum Control {
     Continue(usize),
     Jump(usize),
     Stop,
+    Return,
     Revert,
     Error(VmError),
 }
