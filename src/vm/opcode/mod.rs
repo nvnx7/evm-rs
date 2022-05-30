@@ -147,6 +147,8 @@ impl Opcode {
     make_opcode!(0x9e, SWAP15, swap15);
     make_opcode!(0x9f, SWAP16, swap16);
 
+    make_opcode!(0xf3, RETURN, return_);
+    make_opcode!(0xfd, REVERT, revert);
     make_opcode!(0xfe, INVALID, invalid);
 
     pub fn get(code: u8) -> Option<&'static Self> {
@@ -261,6 +263,8 @@ pub const OPCODE_LIST: [Opcode; 256] = {
     opcodes[Opcode::SWAP15.code as usize] = Opcode::SWAP15;
     opcodes[Opcode::SWAP16.code as usize] = Opcode::SWAP16;
 
+    opcodes[Opcode::RETURN.code as usize] = Opcode::RETURN;
+    opcodes[Opcode::REVERT.code as usize] = Opcode::REVERT;
     opcodes[Opcode::INVALID.code as usize] = Opcode::INVALID;
 
     opcodes
