@@ -1,6 +1,6 @@
 use super::Control;
 use crate::vm::opcode::i256::I256;
-use crate::vm::Vm;
+use crate::vm::{Vm, VmError};
 use core::ops::{BitAnd, BitOr, BitXor};
 use primitive_types::{H256, U256};
 
@@ -89,13 +89,19 @@ pub fn not(vm: &mut Vm) -> Control {
 }
 
 // 0x1a
-// pub fn byte(vm: &mut Vm) -> Control {
-//     pop_u256!(vm, a, b);
-//     let b = b.low_u64() as usize;
-//     let res = if b < 32 { a.low_bits(b) } else { U256::zero() };
-//     push_u256!(vm, res);
-//     Control::Continue(1)
-// }
+pub fn byte(vm: &mut Vm) -> Control {
+    pop_usize!(vm, offset);
+    pop_u256!(vm, value);
+
+    if offset > 32 {
+        push_u256!(vm, U256::zero());
+    } else {
+        // U256 is little endian
+        let byte = value.byte(32 - offset - 1);
+        push_u256!(vm, U256::from(byte));
+    }
+    Control::Continue(1)
+}
 
 // 0x1b
 pub fn shl(vm: &mut Vm) -> Control {
