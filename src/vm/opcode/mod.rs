@@ -65,7 +65,9 @@ impl Opcode {
     make_opcode!(0x17, OR, or);
     make_opcode!(0x18, XOR, xor);
     make_opcode!(0x19, NOT, not);
-    // make_opcode!(0x1a, BYTE, byte);
+    make_opcode!(0x1a, BYTE, byte);
+    make_opcode!(0x1b, SHL, shl);
+    make_opcode!(0x1c, SHR, shr);
 
     make_opcode!(0x50, POP, pop);
     make_opcode!(0x51, MLOAD, mload);
@@ -183,10 +185,10 @@ pub const OPCODE_LIST: [Opcode; 256] = {
     opcodes[Opcode::OR.code as usize] = Opcode::OR;
     opcodes[Opcode::XOR.code as usize] = Opcode::XOR;
     opcodes[Opcode::NOT.code as usize] = Opcode::NOT;
-    // opcodes[Opcode::SHL.code as usize] = Opcode::SHL;
-    // opcodes[Opcode::SHR.code as usize] = Opcode::SHR;
+    opcodes[Opcode::SHL.code as usize] = Opcode::SHL;
+    opcodes[Opcode::SHR.code as usize] = Opcode::SHR;
     // opcodes[Opcode::SAR.code as usize] = Opcode::SAR;
-    // opcodes[Opcode::BYTE.code as usize] = Opcode::BYTE;
+    opcodes[Opcode::BYTE.code as usize] = Opcode::BYTE;
     opcodes[Opcode::POP.code as usize] = Opcode::POP;
     opcodes[Opcode::MLOAD.code as usize] = Opcode::MLOAD;
     opcodes[Opcode::MSTORE.code as usize] = Opcode::MSTORE;
