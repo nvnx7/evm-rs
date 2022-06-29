@@ -1,4 +1,4 @@
-# rust-evm
+# evm-rs [WIP]
 
 EVM (Ethereum Virtual Machine) implementation in Rust language acc. to the specs.
 
