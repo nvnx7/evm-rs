@@ -1,5 +1,5 @@
 use super::Control;
-use crate::vm::{Vm, VmError};
+use crate::{Vm, VmError};
 use primitive_types::{H256, U256};
 
 macro_rules! make_push_fn {

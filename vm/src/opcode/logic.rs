@@ -1,6 +1,6 @@
 use super::Control;
-use crate::vm::opcode::i256::I256;
-use crate::vm::{Vm, VmError};
+use crate::opcode::i256::I256;
+use crate::{Vm, VmError};
 use core::ops::{BitAnd, BitOr, BitXor};
 use primitive_types::{H256, U256};
 

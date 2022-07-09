@@ -1,11 +1,4 @@
-[package]
-name = "rust-evm"
-author = "Naveen Sahu"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-primitive-types = "0.11.1"
-log = "*"
-env_logger = "*"
-hex = "0.4.3"
+[workspace]
+members = [
+    "vm",
+]

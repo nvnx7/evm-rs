@@ -6,7 +6,7 @@ mod logic;
 mod misc;
 mod store;
 
-use crate::vm::{error::VmError, Vm};
+use crate::{error::VmError, Vm};
 use arithmetic::*;
 use logic::*;
 use misc::*;

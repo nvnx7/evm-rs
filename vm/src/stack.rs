@@ -1,4 +1,4 @@
-use crate::vm::error::VmError;
+use crate::error::VmError;
 use primitive_types::H256;
 use std::{default, fmt};
 

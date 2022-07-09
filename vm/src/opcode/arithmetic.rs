@@ -1,6 +1,6 @@
 use super::Control;
-use crate::vm::opcode::i256::I256;
-use crate::vm::Vm;
+use crate::opcode::i256::I256;
+use crate::Vm;
 use primitive_types::{H256, U256};
 
 // 0x01
