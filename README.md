@@ -1,8 +1,9 @@
-# evm-rs [WIP]
+# evm-rs
 
 EVM (Ethereum Virtual Machine) implementation in Rust language acc. to the specs.
 
 ### Example
+
 ```rust
 // Iterate and sum up to 5
 
