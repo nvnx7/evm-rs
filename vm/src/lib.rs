@@ -7,6 +7,7 @@ pub mod stack;
 use error::VmError;
 use opcode::{Control, Opcode};
 use std::fmt;
+use tracing::info;
 
 pub struct Vm {
     stack: stack::Stack,
@@ -57,14 +58,17 @@ impl Vm {
         }
     }
 
+    // #[tracing::instrument]
     pub fn run(&mut self) -> Result<(), Execution> {
         loop {
             match self.step() {
                 Ok(reason) => match reason {
                     Execution::Stop => {
+                        info!("Terminated with STOP(0x00)");
                         return Ok(());
                     }
                     Execution::Return => {
+                        info!("Terminated with RETURN(0xf3)");
                         return Ok(());
                     }
                     _ => (()),
@@ -89,6 +93,7 @@ impl Vm {
 
         let func = opcode.exec;
 
+        info!("{:?}", self);
         match func(self) {
             Control::Continue(n) => {
                 self.pc += n;
@@ -116,15 +121,16 @@ impl Vm {
 
 impl fmt::Debug for Vm {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let op_name = if let Some(op) = self.code.get(self.pc).and_then(|&code| Opcode::get(code)) {
-            op.mnemonic
-        } else {
-            Opcode::INVALID.mnemonic
-        };
+        let (opc, op_name) =
+            if let Some(op) = self.code.get(self.pc).and_then(|&code| Opcode::get(code)) {
+                (op.code, op.mnemonic)
+            } else {
+                (Opcode::INVALID.code, Opcode::INVALID.mnemonic)
+            };
         write!(
             f,
-            "pc: {:?} -> opcode: {}\nstack:\n{}\nmemory: {:?}",
-            self.pc, op_name, self.stack, self.memory
+            "pc: {:?} -> opcode: {}({:#04x})\nstack:\n{}\nmemory: {:?}",
+            self.pc, op_name, opc, self.stack, self.memory
         )
     }
 }
@@ -132,7 +138,6 @@ impl fmt::Debug for Vm {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use primitive_types::U256;
 
     #[test]
     fn it_works() {
@@ -146,7 +151,6 @@ mod tests {
             0x11, // GT          (check sum < 5)
             0x60, 0x02, // PUSH1
             0x57, // JUMPI       (iterate if sum < 5)
-            // 0x00,    // STOP
             0x60, 0x00, // PUSH1
             0x52, // MSTORE      (store sum in memory)
             0x60, 0x20, // PUSH1
